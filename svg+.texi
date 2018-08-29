@@ -56,8 +56,8 @@ modify this GNU manual.''
 @chapter Introduction
 
 This package is based on the SVG package (svg.el) written by Lars
-Magne Ingebrigtsen <larsi@gnus.org> and included in Emacs 26.1.  SVG+
-provides additional SVG editing functions.
+Magne Ingebrigtsen and included in Emacs 26.1.  SVG+ provides
+additional SVG editing functions.
 
 @node SVG Images
 @chapter SVG Images
