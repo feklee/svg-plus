@@ -46,10 +46,18 @@ modify this GNU manual.''
 @end ifnottex
 
 @menu
+* Introduction::
 * SVG Images::
 * GNU Free Documentation License::  The license for this documentation.
 * Index::
 @end menu
+
+@node Introduction
+@chapter Introduction
+
+This package is based on the SVG package (svg.el) written by Lars
+Magne Ingebrigtsen <larsi@gnus.org> and included in Emacs 26.1.  SVG+
+provides additional SVG editing functions.
 
 @node SVG Images
 @chapter SVG Images
