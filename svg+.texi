@@ -1,0 +1,232 @@
+\input texinfo @c -*-texinfo-*-
+@setfilename svg+.info
+@settitle Extended SVG image creation functions
+
+@copying
+This manual is for SVG+.
+
+Copyright @copyright{} 2016--2018 Felix E. Klee, Free Software
+Foundation, Inc.
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with the Front-Cover Texts being ``A GNU Manual'',
+and with the Back-Cover Texts as in (a) below.  A copy of the license
+is included in the section entitled ``GNU Free Documentation License''.
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to copy and
+modify this GNU manual.''
+@end quotation
+@end copying
+
+@dircategory Emacs
+@direntry
+* SVG+: (svg+).     Extended SVG image creation functions
+@end direntry
+
+@titlepage
+@title SVG+
+@author Felix E. Klee, Free Software Foundation, Inc.
+
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+
+@end titlepage
+
+@contents
+
+@node Top
+@top SVG+
+
+@ifnottex
+@insertcopying
+@end ifnottex
+
+@menu
+* SVG Images::
+* GNU Free Documentation License::  The license for this documentation.
+* Index::
+@end menu
+
+@node SVG Images
+@chapter SVG Images
+@cindex SVG images
+
+SVG (Scalable Vector Graphics) is an XML format for specifying images.
+If your Emacs build has SVG support, you can create and manipulate
+these images with the following functions.
+
+@defun svg+-create width height &rest args
+Create a new, empty SVG image with the specified dimensions.
+@var{args} is an argument plist with you can specify following:
+
+@table @code
+@item :stroke-width
+The default width (in pixels) of any lines created.
+
+@item :stroke
+The default stroke color on any lines created.
+@end table
+
+This function returns an SVG structure, and all the following functions
+work on that structure.
+@end defun
+
+@defun svg+-gradient svg id type stops
+Create a gradient in @var{svg} with identifier @var{id}.  @var{type}
+specifies the gradient type, and can be either @code{linear} or
+@code{radial}.  @var{stops} is a list of percentage/color pairs.
+
+The following will create a linear gradient that goes from red at the
+start, to green 25% of the way, to blue at the end:
+
+@lisp
+(svg+-gradient svg "gradient1" 'linear
+               '((0 . "red") (25 . "green") (100 . "blue")))
+@end lisp
+
+The gradient created (and inserted into the SVG object) can later be
+used by all functions that create shapes.
+@end defun
+
+All the following functions take an optional list of keyword
+parameters that alter the various attributes from their default
+values.  Valid attributes include:
+
+@table @code
+@item :stroke-width
+The width (in pixels) of lines drawn, and outlines around solid
+shapes.
+
+@item :stroke-color
+The color of lines drawn, and outlines around solid shapes.
+
+@item :fill-color
+The color used for solid shapes.
+
+@item :id
+The identified of the shape.
+
+@item :gradient
+If given, this should be the identifier of a previously defined
+gradient object.
+@end table
+
+@defun svg+-rectangle svg x y width height &rest args
+Add a rectangle to @var{svg} where the upper left corner is at
+position @var{x}/@var{y} and is of size @var{width}/@var{height}.
+
+@lisp
+(svg+-rectangle svg 100 100 500 500 :gradient "gradient1")
+@end lisp
+@end defun
+
+@defun svg+-circle svg x y radius &rest args
+Add a circle to @var{svg} where the center is at @var{x}/@var{y}
+and the radius is @var{radius}.
+@end defun
+
+@defun svg+-ellipse svg x y x-radius y-radius &rest args
+Add a circle to @var{svg} where the center is at @var{x}/@var{y} and
+the horizontal radius is @var{x-radius} and the vertical radius is
+@var{y-radius}.
+@end defun
+
+@defun svg+-line svg x1 y1 x2 y2 &rest args
+Add a line to @var{svg} that starts at @var{x1}/@var{y1} and extends
+to @var{x2}/@var{y2}.
+@end defun
+
+@defun svg+-polyline svg points &rest args
+Add a multiple segment line to @var{svg} that goes through
+@var{points}, which is a list of X/Y position pairs.
+
+@lisp
+(svg+-polyline svg '((200 . 100) (500 . 450) (80 . 100))
+               :stroke-color "green")
+@end lisp
+@end defun
+
+@defun svg+-polygon svg points &rest args
+Add a polygon to @var{svg} where @var{points} is a list of X/Y pairs
+that describe the outer circumference of the polygon.
+
+@lisp
+(svg+-polygon svg '((100 . 100) (200 . 150) (150 . 90))
+              :stroke-color "blue" :fill-color "red"")
+@end lisp
+@end defun
+
+@defun svg+-path svg commands &rest args
+Add the outline of a shape to @var{svg}. The @var{commands} follow the
+Scalable Vector Graphics standard. This function can be used to create
+arcs.
+
+@lisp
+(svg+-path svg '((M 100 300)
+                 (A 300 300 0 0 0 300 100)
+                 (Z))
+          :stroke-color "blue" :fill-color "yellow")
+@end lisp
+@end defun
+
+@defun svg+-text svg text &rest args
+Add a text to @var{svg}.
+
+@lisp
+(svg+-text
+ svg "This is a text"
+ :font-size "40"
+ :font-weight "bold"
+ :stroke "black"
+ :fill "white"
+ :font-family "impact"
+ :letter-spacing "4pt"
+ :x 300
+ :y 400
+ :stroke-width 1)
+@end lisp
+@end defun
+
+@defun svg+-embed svg image image-type datap &rest args
+Add an embedded (raster) image to @var{svg}.  If @var{datap} is
+@code{nil}, @var{IMAGE} should be a file name; if not, it should be a
+binary string containing the image data.  @var{image-type} should be a
+@acronym{MIME} image type, for instance @samp{"image/jpeg"}.
+
+@lisp
+(svg+-embed svg "~/rms.jpg" "image/jpeg" nil
+            :width "100px" :height "100px"
+            :x "50px" :y "75px")
+@end lisp
+@end defun
+
+@defun svg+-remove svg id
+Remove the element with identifier @code{id} from the @code{svg}.
+@end defun
+
+Finally, the @code{svg+-image} takes an SVG object as its parameter and
+returns an image object suitable for use in functions like
+@code{insert-image}.  Here's a complete example that creates and inserts
+an image with a circle:
+
+@lisp
+(let ((svg (svg+-create 400 400 :stroke-width 10)))
+  (svg+-gradient svg "gradient1" 'linear '((0 . "red") (100 . "blue")))
+  (svg+-circle svg 200 200 100 :gradient "gradient1"
+                   :stroke-color "green")
+  (insert-image (svg+-image svg)))
+@end lisp
+
+
+@node GNU Free Documentation License
+@appendix GNU Free Documentation License
+@include doclicense.texi
+
+@node Index
+@unnumbered Index
+
+@printindex fn
