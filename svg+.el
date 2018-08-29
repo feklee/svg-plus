@@ -307,6 +307,29 @@ If the SVG is later changed, the image will also be updated."
                                   "\\'")))))
     (dom-remove-node svg node)))
 
+(defun svg+-path (svg commands &rest args)
+  "Add the outline of a shape to SVG.
+The COMMANDS follow the Scalable Vector Graphics standard.  This
+function can be used to create arcs."
+  (let ((d (mapconcat 'prin1-to-string (apply 'append commands) " ")))
+    (svg+--append
+     svg
+     (dom-node 'path
+	       `((d . ,d)
+	         ,@(svg+--arguments svg args))))))
+
+(defun svg+-clip-path (svg &rest args)
+  (let ((new-dom-node (dom-node 'clipPath
+	                `(,@(svg+--arguments svg args)))))
+    (svg+--append svg new-dom-node)
+    new-dom-node))
+
+(defun svg+-node (parent tag &rest args)
+  (let ((new-dom-node (dom-node tag
+	                `(,@(svg+--arguments svg args)))))
+    (svg+--append svg new-dom-node)
+    new-dom-node))
+
 (provide 'svg)
 
 ;;; svg+.el ends here
