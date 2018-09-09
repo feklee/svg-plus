@@ -4,6 +4,7 @@
 ;; Software Foundation, Inc.
 
 ;; Author: Felix E. Klee <felix.klee@inka.de>
+;; Author: Lars Magne Ingebrigtsen <larsi@gnus.org>
 ;; Author: Free Software Foundation, Inc.
 ;; Version: 0.1.0
 ;; Keywords: image
