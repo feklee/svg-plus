@@ -308,16 +308,128 @@ If the SVG is later changed, the image will also be updated."
                                   "\\'")))))
     (dom-remove-node svg node)))
 
+;; Function body copied from `org-plist-delete' in Emacs 26.1.
+(defun svg+--plist-delete (plist property)
+  "Delete PROPERTY from PLIST.
+This is in contrast to merely setting it to 0."
+  (let (p)
+    (while plist
+      (if (not (eq property (car plist)))
+	  (setq p (plist-put p (car plist) (nth 1 plist))))
+      (setq plist (cddr plist)))
+    p))
+
+(defun svg+--path-command-symbol (command-symbol command-args)
+  (let ((char (symbol-name command-symbol))
+        (relative (if (plist-member command-args :relative)
+                      (plist-get command-args :relative)
+                    (plist-get command-args :default-relative))))
+    (intern (if relative (downcase char) (upcase char)))))
+
+(defun svg+--elliptical-arc-coordinates
+    (rx ry x y &rest args)
+  (list
+   rx ry
+   (or (plist-get args :x-axis-rotation) 0)
+   (if (plist-get args :large-arc) 1 0)
+   (if (plist-get args :sweep) 1 0)
+   x y))
+
+(defun svg+--elliptical-arc-command (coordinates-list &rest args)
+  (cons
+   (svg+--path-command-symbol 'a args)
+   (apply 'append
+          (mapcar
+           (lambda (coordinates)
+             (apply 'svg+--elliptical-arc-coordinates
+                    coordinates))
+           coordinates-list))))
+
+(defun svg+--moveto-command (coordinates-list &rest args)
+  (cons
+   (svg+--path-command-symbol 'm args)
+   (apply 'append
+          (mapcar
+           (lambda (coordinates)
+             (list (car coordinates) (cdr coordinates)))
+           coordinates-list))))
+
+(defun svg+--closepath-command (&rest args)
+  (list (svg+--path-command-symbol 'z args)))
+
+(defun svg+--lineto-command (coordinates-list &rest args)
+  (cons
+   (svg+--path-command-symbol 'l args)
+   (apply 'append
+          (mapcar
+           (lambda (coordinates)
+             (list (car coordinates) (cdr coordinates)))
+           coordinates-list))))
+
+(defun svg+--horizontal-lineto-command (coordinate-list &rest args)
+  (cons
+   (svg+--path-command-symbol 'h args)
+   coordinate-list))
+
+(defun svg+--vertical-lineto-command (coordinate-list &rest args)
+  (cons
+   (svg+--path-command-symbol 'v args)
+   coordinate-list))
+
+(defun svg+--curveto-command (coordinates-list &rest args)
+  (cons
+   (svg+--path-command-symbol 'c args)
+   (apply 'append coordinates-list)))
+
+(defun svg+--smooth-curveto-command (coordinates-list &rest args)
+  (cons
+   (svg+--path-command-symbol 's args)
+   (apply 'append coordinates-list)))
+
+(defun svg+--quadratic-bezier-curveto-command (coordinates-list &rest args)
+        (cons
+         (svg+--path-command-symbol 'q args)
+         (apply 'append coordinates-list)))
+
+(defun svg+--smooth-quadratic-bezier-curveto-command (coordinates-list &rest args)
+  (cons
+   (svg+--path-command-symbol 't args)
+      (apply 'append coordinates-list)))
+
+(defun svg+--eval-path-command (command default-relative)
+  (cl-letf
+      (((symbol-function 'moveto) #'svg+--moveto-command)
+       ((symbol-function 'closepath) #'svg+--closepath-command)
+       ((symbol-function 'lineto) #'svg+--lineto-command)
+       ((symbol-function 'horizontal-lineto)
+        #'svg+--horizontal-lineto-command)
+       ((symbol-function 'vertical-lineto)
+        #'svg+--vertical-lineto-command)
+       ((symbol-function 'curveto) #'svg+--curveto-command)
+       ((symbol-function 'smooth-curveto) #'svg+--smooth-curveto-command)
+       ((symbol-function 'quadratic-bezier-curveto)
+        #'svg+--quadratic-bezier-curveto-command)
+       ((symbol-function 'smooth-quadratic-bezier-curveto)
+        #'svg+--smooth-quadratic-bezier-curveto-command)
+       ((symbol-function 'elliptical-arc) #'svg+--elliptical-arc-command)
+       (extended-command (append command (list :default-relative
+                                               default-relative))))
+    (mapconcat 'prin1-to-string (apply extended-command) " ")))
+
 (defun svg+-path (svg commands &rest args)
-  "Add the outline of a shape to SVG.
-The COMMANDS follow the Scalable Vector Graphics standard.  This
-function can be used to create arcs."
-  (let ((d (mapconcat 'prin1-to-string (apply 'append commands) " ")))
+  "Add the outline of a shape to SVG following COMMANDS."
+  (let* ((default-relative (plist-get args :relative))
+         (stripped-args (svg+--plist-delete args :relative))
+         (d (mapconcat 'identity
+                       (mapcar 
+                        (lambda (command)
+                          (svg+--eval-path-command command default-relative))
+                        commands) " ")))
     (svg+--append
      svg
      (dom-node 'path
 	       `((d . ,d)
-	         ,@(svg+--arguments svg args))))))
+	         ,@(svg+--arguments svg stripped-args))))))
 
 (defun svg+-clip-path (svg &rest args)
   (let ((new-dom-node (dom-node 'clipPath
