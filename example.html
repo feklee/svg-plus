@@ -1,0 +1,12 @@
+<!-- For testing in the browser -->
+
+<body style="background: gray; width: 100vw; height: 100vh; text-align: center">
+  <img style="height: 70vh; margin-top: 15vh">
+  <script>
+    window.onfocus = function () {
+        location.reload(true);
+    }
+    document.images[0].src = "example.svg?" + Math.random();
+  </script>
+</body>
+</html>

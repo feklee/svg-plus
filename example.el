@@ -1,6 +1,13 @@
 (setq svg (svg+-create 800 800 :stroke "orange" :stroke-width 5))
 (svg+-gradient svg "gradient" 'linear '((0 . "red") (100 . "blue")))
-(save-excursion (goto-char (point-max)) (svg+-insert-image svg))
+
+(svg+-image svg)
+(svg+-insert-image svg)
+
+;; For interactive updates, if Emacs can display SVG:
+;;
+;; (save-excursion (goto-char (point-max)) (svg+-insert-image svg))
+
 (svg+-rectangle svg 100 100 500 500 :gradient "gradient" :id "rec1")
 (svg+-circle svg 500 500 100 :id "circle1")
 (svg+-ellipse svg 100 100 50 90 :stroke "red" :id "ellipse1")
@@ -35,3 +42,6 @@
                  ;;                  (3 4 0 7)) :relative nil)
                  ;; (closepath :relative nil)))
 
+(with-temp-file "example.svg"
+  (set-buffer-multibyte nil)
+  (svg+-print svg))
