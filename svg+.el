@@ -443,6 +443,6 @@ This is in contrast to merely setting it to 0."
     (svg+--append svg new-dom-node)
     new-dom-node))
 
-(provide 'svg)
+(provide 'svg+)
 
 ;;; svg+.el ends here
