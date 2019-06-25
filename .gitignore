@@ -1,3 +1,6 @@
 *.info
-.log
-.toc
+*.log
+*.toc
+*.aux
+*.fn
+_region_.texi
