@@ -200,8 +200,8 @@ otherwise.  IMAGE-TYPE should be a MIME image type, like
 (defun svg+--append (svg node)
   (let ((old (and (dom-attr node 'id)
 		  (dom-by-id svg
-                             (concat "\\`" (regexp-quote (dom-attr node 'id))
-                                     "\\'")))))
+                     (concat "\\`" (regexp-quote (dom-attr node 'id))
+                             "\\'")))))
     (if old
 	(setcdr (car old) (cdr node))
       (dom-append-child svg node)))
