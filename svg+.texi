@@ -48,6 +48,7 @@ modify this GNU manual.''
 @menu
 * Introduction::
 * Usage::
+* Path Commands::
 * GNU Free Documentation License::  The license for this documentation.
 * Index::
 @end menu
@@ -172,14 +173,25 @@ that describe the outer circumference of the polygon.
 
 @defun svg+-path svg commands &rest args
 Add the outline of a shape to @var{svg}.  The @var{commands} follow
-the Scalable Vector Graphics standard.  This function can be used to
-create arcs.
+the Scalable Vector Graphics standard.
+
+Coordiates by default are absolute.  To use coordinates relative to
+the last position, or - initially - to the origin, set the attribute
+@var{:relative} to @code{t}.  This attribute can be specified to the
+function or to individual commands.  If specified for the function,
+then all commands use relative coordinates by default.  To make an
+individual command use absolute coordinates, set @var{:relative} to
+@code{nil}.
 
 @lisp
-(svg+-path svg '((M 100 300)
-                 (A 300 300 0 0 0 300 100)
-                 (Z))
-          :stroke-color "blue" :fill-color "yellow")
+(svg+-path svg
+           '((moveto ((100 . 200)))
+             (elliptical-arc ((100 100 100 -100 :large-arc t)))
+             (lineto ((0 . 0)) :relative nil)
+             (closepath))
+           :stroke-color "blue"
+           :fill-color "lightblue"
+           :relative t)
 @end lisp
 @end defun
 
@@ -255,6 +267,12 @@ an image with a circle:
   (insert-image (svg+-image svg)))
 @end lisp
 
+@node Path Commands
+@chapter Path Commands
+
+@deffn Command moveto &args
+Foo
+@end deffn
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
