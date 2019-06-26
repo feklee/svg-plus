@@ -437,7 +437,7 @@ This is in contrast to merely setting it to 0."
     (svg+--append svg new-dom-node)
     new-dom-node))
 
-(defun svg+-node (parent tag &rest args)
+(defun svg+-node (svg tag &rest args)
   (let ((new-dom-node (dom-node tag
 	                `(,@(svg+--arguments svg args)))))
     (svg+--append svg new-dom-node)

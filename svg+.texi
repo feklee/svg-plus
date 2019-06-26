@@ -215,7 +215,7 @@ binary string containing the image data.  @var{image-type} should be a
 @end defun
 
 @defun svg+-clip-path svg &rest args
-Create a clipping path.  If applied to a shape via the
+Create a clipping path to @var{svg}.  If applied to a shape via the
 @var{:clip-path} property, parts of that shape which lie outside of
 the clipping path are not drawn.
 
@@ -225,6 +225,16 @@ the clipping path are not drawn.
 (svg+-rectangle svg 100 100 500 500
                 :fill-color "red"
                 :clip-path "url(#foo)")
+@end lisp
+@end defun
+
+@defun svg+-node svg tag &rest args
+Add custom node @var{tag} to @var{svg}.
+
+@lisp
+(svg+-node svg
+           'rect
+           :width 400 :height 200 :x 50 :y 100 :fill "green")
 @end lisp
 @end defun
 
