@@ -2,11 +2,21 @@
 (svg+-gradient svg "gradient" 'linear '((0 . "red") (100 . "blue")))
 
 (svg+-image svg)
-(svg+-insert-image svg)
+(svg+-insert-image svg) 
 
 ;; For interactive updates, if Emacs can display SVG:
-;;
-;; (save-excursion (goto-char (point-max)) (svg+-insert-image svg))
+(save-excursion (goto-char (point-max)) (svg+-insert-image svg))
+
+
+(let ((clip-path (svg+-clip-path svg :id "foo")))
+  (svg+-circle clip-path 350 350 300 :stroke-width 0))
+(svg+-rectangle svg 100 100 500 500
+                :fill-color "red"
+                :clip-path "url(#foo)")
+
+
+
+(svg+-rectangle svg 100 100 500 500 :gradient "gradient1")
 
 (svg+-rectangle svg 100 100 500 500 :gradient "gradient" :id "rec1")
 (svg+-circle svg 500 500 100 :id "circle1")
@@ -45,3 +55,4 @@
 (with-temp-file "example.svg"
   (set-buffer-multibyte nil)
   (svg+-print svg))
+ 

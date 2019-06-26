@@ -115,11 +115,14 @@ The color of lines drawn, and outlines around solid shapes.
 The color used for solid shapes.
 
 @item :id
-The identified of the shape.
+The identifier of the shape.
 
 @item :gradient
 If given, this should be the identifier of a previously defined
 gradient object.
+
+@item :clip-path
+Identifier of a clip path.
 @end table
 
 @defun svg+-rectangle svg x y width height &rest args
@@ -168,9 +171,9 @@ that describe the outer circumference of the polygon.
 @end defun
 
 @defun svg+-path svg commands &rest args
-Add the outline of a shape to @var{svg}. The @var{commands} follow the
-Scalable Vector Graphics standard. This function can be used to create
-arcs.
+Add the outline of a shape to @var{svg}.  The @var{commands} follow
+the Scalable Vector Graphics standard.  This function can be used to
+create arcs.
 
 @lisp
 (svg+-path svg '((M 100 300)
@@ -208,6 +211,20 @@ binary string containing the image data.  @var{image-type} should be a
 (svg+-embed svg "~/rms.jpg" "image/jpeg" nil
             :width "100px" :height "100px"
             :x "50px" :y "75px")
+@end lisp
+@end defun
+
+@defun svg+-clip-path svg &rest args
+Create a clipping path.  If applied to a shape via the
+@var{:clip-path} property, parts of that shape which lie outside of
+the clipping path are not drawn.
+
+@lisp
+(let ((clip-path (svg+-clip-path svg :id "foo")))
+  (svg+-circle clip-path 350 350 300 :stroke-width 0))
+(svg+-rectangle svg 100 100 500 500
+                :fill-color "red"
+                :clip-path "url(#foo)")
 @end lisp
 @end defun
 
