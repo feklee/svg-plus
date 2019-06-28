@@ -270,8 +270,14 @@ an image with a circle:
 @node Path Commands
 @chapter Path Commands
 
-@deffn Command moveto &args
-Foo
+@deffn Command moveto points
+Move the pen to the first point in @var{points}.  Additional points
+are connected with lines.  Points are X/Y position pairs.
+
+@lisp
+(svg+-path svg '((moveto ((200 . 100) (100 . 200) (0 . 100))))
+           :stroke "black")
+@end lisp
 @end deffn
 
 @node GNU Free Documentation License
