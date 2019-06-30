@@ -293,6 +293,27 @@ pairs.
 @end lisp
 @end deffn
 
+@deffn Command horizontal-lineto x-positions
+Draw horizontal lines to @var{x-positions}.  Specifying multiple
+positions is possible, although usually this doesn’t make sense.
+
+@lisp
+(svg+-path svg '((moveto ((100 . 200)))
+                 (horizontal-lineto (300)))
+           :stroke "green")
+@end lisp
+@end deffn
+
+@deffn Command vertical-lineto y-positions
+Draw vertical lines to @var{y-positions}.
+
+@lisp
+(svg+-path svg '((moveto ((200 . 100)))
+                 (horizontal-lineto (300)))
+           :stroke "green")
+@end lisp
+@end deffn
+
 @deffn Command closepath
 Ends the current subpath by connecting it back to its initial point.
 A straight line is drawn along the connection.
