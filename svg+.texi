@@ -204,7 +204,7 @@ Add a text to @var{svg}.
  :font-size "40"
  :font-weight "bold"
  :stroke "black"
- :fill "white"
+ :fill-color "white"
  :font-family "impact"
  :letter-spacing "4pt"
  :x 300
@@ -246,7 +246,7 @@ Add custom node @var{tag} to @var{svg}.
 @lisp
 (svg+-node svg
            'rect
-           :width 400 :height 200 :x 50 :y 100 :fill "green")
+           :width 400 :height 200 :x 50 :y 100 :fill-color "green")
 @end lisp
 @end defun
 
@@ -272,43 +272,44 @@ an image with a circle:
 
 @deffn Command moveto points
 Move the pen to the first point in @var{points}.  Additional points
-are connected with lines.  @var{points} is a list of X/Y position
+are connected with lines.  @var{points} is a list of X/Y coordinate
 pairs.  Subsequent @command{moveto} commands represent the start of a
 new @dfn{subpath}.
 
 @lisp
 (svg+-path svg '((moveto ((200 . 100) (100 . 200) (0 . 100))))
-           :fill "white" :stroke "black")
+           :fill-color "white" :stroke "black")
 @end lisp
 @end deffn
 
 @deffn Command closepath
-Ends the current subpath by connecting it back to its initial point.
-A line is drawn along the connection.
+End the current subpath by connecting it back to its initial point.  A
+line is drawn along the connection.
 
 @lisp
 (svg+-path svg '((moveto ((200 . 100) (100 . 200) (0 . 100)))
                  (closepath)
                  (moveto ((75 . 125) (100 . 150) (125 . 125)))
                  (closepath))
-           :fill "red" :stroke "black")
+           :fill-color "red" :stroke "black")
 @end lisp
 @end deffn
 
 @deffn Command lineto points
 Draw lines between @var{points}, which is a list of X/Y position
 pairs.
-
+cb
 @lisp
 (svg+-path svg '((moveto ((200 . 100)))
                  (lineto ((100 . 200) (0 . 100))))
-           :fill "yellow" :stroke "red")
+           :fill-color "yellow" :stroke "red")
 @end lisp
 @end deffn
 
-@deffn Command horizontal-lineto x-positions
-Draw horizontal lines to @var{x-positions}.  Specifying multiple
-positions is possible, although usually this doesn’t make sense.
+@deffn Command horizontal-lineto x-coordinates
+Draw horizontal lines from the current point to @var{x-coordinates}.
+Specifying multiple x-coordinates is possible, although usually this
+doesn’t make sense.
 
 @lisp
 (svg+-path svg '((moveto ((100 . 200)))
@@ -317,13 +318,34 @@ positions is possible, although usually this doesn’t make sense.
 @end lisp
 @end deffn
 
-@deffn Command vertical-lineto y-positions
-Draw vertical lines to @var{y-positions}.
+@deffn Command vertical-lineto y-coordinates
+Draw vertical lines to @var{y-coordinates}.
 
 @lisp
 (svg+-path svg '((moveto ((200 . 100)))
                  (horizontal-lineto (300)))
            :stroke "green")
+@end lisp
+@end deffn
+
+@deffn command curveto coordinate-set
+
+@end deffn
+
+@deffn Command curveto coordinate-sets
+Using the first coordinate set, draw a cubic Bézier curve from the
+current point.  If there are coordinate sets draw a polybézier.  Each
+coordinate set is a list of the form @code{(@var{x1} @var{y1} @var{x2}
+@var{y2} @var{x} @var{y})}, where @w{(@var{x}, @var{y})} is the
+curve’s end point.  @w{(@var{x1}, @var{y1})} and @w{(@var{x2},
+@var{y2})} are control points at the beginning and at the end,
+respectively.
+
+@lisp
+(svg+-path svg '((moveto ((100 . 100)))
+                 (curveto ((200 100 100 200 200 200)
+                           (300 200 0 100 100 100))))
+           :fill-color "transparent" :stroke "red")
 @end lisp
 @end deffn
 
