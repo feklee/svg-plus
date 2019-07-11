@@ -334,18 +334,38 @@ Draw vertical lines to @var{y-coordinates}.
 
 @deffn Command curveto coordinate-sets
 Using the first coordinate set, draw a cubic Bézier curve from the
-current point.  If there are coordinate sets draw a polybézier.  Each
-coordinate set is a list of the form @code{(@var{x1} @var{y1} @var{x2}
-@var{y2} @var{x} @var{y})}, where @w{(@var{x}, @var{y})} is the
-curve’s end point.  @w{(@var{x1}, @var{y1})} and @w{(@var{x2},
-@var{y2})} are control points at the beginning and at the end,
-respectively.
+current point.  If there are multiple coordinate sets, draw a
+polybézier.  Each coordinate set is a list of the form @code{(@var{x1}
+@var{y1} @var{x2} @var{y2} @var{x} @var{y})}, where @w{(@var{x},
+@var{y})} is the curve’s end point.  @w{(@var{x1}, @var{y1})} and
+@w{(@var{x2}, @var{y2})} are control points at the beginning and at
+the end, respectively.
 
 @lisp
 (svg+-path svg '((moveto ((100 . 100)))
                  (curveto ((200 100 100 200 200 200)
                            (300 200 0 100 100 100))))
            :fill-color "transparent" :stroke "red")
+@end lisp
+@end deffn
+
+@deffn Command smooth-curveto coordinate-sets
+Using the first coordinate set, draw a cubic Bézier curve from the
+current point.  If there are multiple coordinate sets, draw a
+polybézier.  Each coordinate set is a list of the form @code{(@var{x2}
+@var{y2} @var{x} @var{y})}, where @w{(@var{x}, @var{y})} is the
+curve’s end point and @w{(@var{x2}, @var{y2})} is the corresponding
+control point.  The first control point is the reflection of the
+second control point of the previous command relative to the current
+point, if that command was @command{curveto} or
+@command{smooth-curveto}.  Otherwise the first control point coincides
+with the current point.
+
+@lisp
+(svg+-path svg '((moveto ((100 . 100)))
+                 (curveto ((200 100 100 200 200 200)))
+                 (smooth-curveto ((0 100 100 100))))
+           :fill "transparent" :stroke "blue")
 @end lisp
 @end deffn
 
