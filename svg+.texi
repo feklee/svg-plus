@@ -386,6 +386,25 @@ curve’s end point and @w{(@var{x1}, @var{y1})} is the control point.
 @end lisp
 @end deffn
 
+@deffn Command smooth-quadratic-bezier-curveto coordinate-sets
+Using the first coordinate set, draw a quadratic Bézier curve from the
+current point.  If there are multiple coordinate sets, draw a
+polybézier.  The control point is the reflection of the control point
+of the previous command relative to the current point, if that command
+was @command{quadratic-bezier-curveto} or
+@command{smooth-quadratic-bezier-curveto}.  Otherwise the control
+point coincides with the current point.
+
+@lisp
+(svg+-path svg '((moveto ((200 . 100)))
+                 (quadratic-bezier-curveto ((300 100 300 200)))
+                 (smooth-quadratic-bezier-curveto ((200 300)))
+                 (smooth-quadratic-bezier-curveto ((100 200)))
+                 (smooth-quadratic-bezier-curveto ((200 100))))
+           :fill "transparent" :stroke "lightblue")
+@end lisp
+@end deffn
+
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 @include doclicense.texi
