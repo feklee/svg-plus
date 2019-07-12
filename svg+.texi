@@ -328,10 +328,6 @@ Draw vertical lines to @var{y-coordinates}.
 @end lisp
 @end deffn
 
-@deffn command curveto coordinate-set
-
-@end deffn
-
 @deffn Command curveto coordinate-sets
 Using the first coordinate set, draw a cubic Bézier curve from the
 current point.  If there are multiple coordinate sets, draw a
@@ -389,9 +385,11 @@ curve’s end point and @w{(@var{x1}, @var{y1})} is the control point.
 @deffn Command smooth-quadratic-bezier-curveto coordinate-sets
 Using the first coordinate set, draw a quadratic Bézier curve from the
 current point.  If there are multiple coordinate sets, draw a
-polybézier.  The control point is the reflection of the control point
-of the previous command relative to the current point, if that command
-was @command{quadratic-bezier-curveto} or
+polybézier.  Each coordinate set is a list of the form @code{(@var{x}
+@var{y})}, where @w{(@var{x}, @var{y})} is the curve’s end point.  The
+control point is the reflection of the control point of the previous
+command relative to the current point, if that command was
+@command{quadratic-bezier-curveto} or
 @command{smooth-quadratic-bezier-curveto}.  Otherwise the control
 point coincides with the current point.
 
@@ -402,6 +400,53 @@ point coincides with the current point.
                  (smooth-quadratic-bezier-curveto ((100 200)))
                  (smooth-quadratic-bezier-curveto ((200 100))))
            :fill "transparent" :stroke "lightblue")
+@end lisp
+@end deffn
+
+@deffn Command elliptical-arc coordinate-sets
+Using the first coordinate set, draw an elliptical arc from the
+current point.  If there are multiple coordinate sets, draw a sequence
+of elliptical arcs.  Each coordinate set is a list of the form
+@code{(@var{rx} @var{ry} @var{x} @var{y})}, where @w{(@var{x},
+@var{y})} is the end point of the ellipse, and @w{(@var{rx},
+@var{ry})} are its radii.  Attributes may be appended to the list:
+
+@table @code
+@item :x-axis-rotation
+The angle in degrees by which the x-axis of the ellipse is rotated
+relative to the x-axis of the current coordinate system.
+
+@item :large-arc
+If set to @code{t}, draw an arc sweep greater than or equal to 180
+degrees.  Otherwise, draw a smaller arc sweep.
+
+@item :sweep
+If set to @code{t}, draw an arc in @dfn{positive angle direction}.
+Otherwise, draw it in @dfn{negative angle direction}.
+@end table
+
+@lisp
+(svg+-path svg '((moveto ((200 . 250)))
+                 (elliptical-arc ((75 75 200 350))))
+           :fill "transparent" :stroke "red")
+(svg+-path svg '((moveto ((200 . 250)))
+                 (elliptical-arc ((75 75 200 350 :large-arc t))))
+           :fill "transparent" :stroke "green")
+(svg+-path svg '((moveto ((200 . 250)))
+                 (elliptical-arc ((75 75 200 350 :sweep t))))
+           :fill "transparent" :stroke "blue")
+(svg+-path svg '((moveto ((200 . 250)))
+                 (elliptical-arc ((75 75 200 350 :large-arc t
+                                      :sweep t))))
+           :fill "transparent" :stroke "gray")
+(svg+-path svg '((moveto ((160 . 100)))
+                 (elliptical-arc ((40 100 80 0)))
+                 (elliptical-arc ((40 100 -40 -70
+                                      :x-axis-rotation -120)))
+                 (elliptical-arc ((40 100 -40 70
+                                      :x-axis-rotation -240))))
+           :stroke "pink" :fill "lightblue"
+           :relative t)
 @end lisp
 @end deffn
 
