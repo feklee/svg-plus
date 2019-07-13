@@ -299,9 +299,9 @@ line is drawn along the connection.
 @end deffn
 
 @deffn Command lineto points
-Draw lines between @var{points}, which is a list of X/Y position
-pairs.
-cb
+Draw a line from the current point to the first element in
+@var{points}, which is a list of X/Y position pairs.  If more than one
+point is specified, draw a polyline.
 @lisp
 (svg+-path svg '((moveto ((200 . 100)))
                  (lineto ((100 . 200) (0 . 100))))
@@ -310,9 +310,9 @@ cb
 @end deffn
 
 @deffn Command horizontal-lineto x-coordinates
-Draw horizontal lines from the current point to @var{x-coordinates}.
-Specifying multiple x-coordinates is possible, although usually this
-doesn’t make sense.
+Draw a horizontal line from the current point to the first element in
+@var{x-coordinates}.  Specifying multiple coordinates is possible,
+although usually this doesn’t make sense.
 
 @lisp
 (svg+-path svg '((moveto ((100 . 200)))
@@ -322,7 +322,7 @@ doesn’t make sense.
 @end deffn
 
 @deffn Command vertical-lineto y-coordinates
-Draw vertical lines to @var{y-coordinates}.
+Draw vertical lines.
 
 @lisp
 (svg+-path svg '((moveto ((200 . 100)))
@@ -332,13 +332,13 @@ Draw vertical lines to @var{y-coordinates}.
 @end deffn
 
 @deffn Command curveto coordinate-sets
-Using the first coordinate set, draw a cubic Bézier curve from the
-current point.  If there are multiple coordinate sets, draw a
-polybézier.  Each coordinate set is a list of the form @code{(@var{x1}
-@var{y1} @var{x2} @var{y2} @var{x} @var{y})}, where @w{(@var{x},
-@var{y})} is the curve’s end point.  @w{(@var{x1}, @var{y1})} and
-@w{(@var{x2}, @var{y2})} are control points at the beginning and at
-the end, respectively.
+Using the first element in @var{coordinate-sets}, draw a cubic Bézier
+curve from the current point.  If there are multiple coordinate sets,
+draw a polybézier.  Each coordinate set is a list of the form
+@code{(@var{x1} @var{y1} @var{x2} @var{y2} @var{x} @var{y})}, where
+@w{(@var{x}, @var{y})} is the curve’s end point.  @w{(@var{x1},
+@var{y1})} and @w{(@var{x2}, @var{y2})} are control points at the
+beginning and at the end, respectively.
 
 @lisp
 (svg+-path svg '((moveto ((100 . 100)))
@@ -349,16 +349,16 @@ the end, respectively.
 @end deffn
 
 @deffn Command smooth-curveto coordinate-sets
-Using the first coordinate set, draw a cubic Bézier curve from the
-current point.  If there are multiple coordinate sets, draw a
-polybézier.  Each coordinate set is a list of the form @code{(@var{x2}
-@var{y2} @var{x} @var{y})}, where @w{(@var{x}, @var{y})} is the
-curve’s end point and @w{(@var{x2}, @var{y2})} is the corresponding
-control point.  The first control point is the reflection of the
-second control point of the previous command relative to the current
-point, if that command was @command{curveto} or
-@command{smooth-curveto}.  Otherwise the first control point coincides
-with the current point.
+Using the first element in @var{coordinate-sets}, draw a cubic Bézier
+curve from the current point.  If there are multiple coordinate sets,
+draw a polybézier.  Each coordinate set is a list of the form
+@code{(@var{x2} @var{y2} @var{x} @var{y})}, where @w{(@var{x},
+@var{y})} is the curve’s end point and @w{(@var{x2}, @var{y2})} is the
+corresponding control point.  The first control point is the
+reflection of the second control point of the previous command
+relative to the current point, if that command was @command{curveto}
+or @command{smooth-curveto}.  Otherwise the first control point
+coincides with the current point.
 
 @lisp
 (svg+-path svg '((moveto ((100 . 100)))
@@ -369,11 +369,12 @@ with the current point.
 @end deffn
 
 @deffn Command quadratic-bezier-curveto coordinate-sets
-Using the first coordinate set, draw a quadratic Bézier curve from the
-current point.  If there are multiple coordinate sets, draw a
-polybézier.  Each coordinate set is a list of the form @code{(@var{x1}
-@var{y1} @var{x} @var{y})}, where @w{(@var{x}, @var{y})} is the
-curve’s end point and @w{(@var{x1}, @var{y1})} is the control point.
+Using the first element in @var{coordinate-sets}, draw a quadratic
+Bézier curve from the current point.  If there are multiple coordinate
+sets, draw a polybézier.  Each coordinate set is a list of the form
+@code{(@var{x1} @var{y1} @var{x} @var{y})}, where @w{(@var{x},
+@var{y})} is the curve’s end point and @w{(@var{x1}, @var{y1})} is the
+control point.
 
 @lisp
 (svg+-path svg '((moveto ((200 . 100)))
@@ -386,13 +387,13 @@ curve’s end point and @w{(@var{x1}, @var{y1})} is the control point.
 @end deffn
 
 @deffn Command smooth-quadratic-bezier-curveto coordinate-sets
-Using the first coordinate set, draw a quadratic Bézier curve from the
-current point.  If there are multiple coordinate sets, draw a
-polybézier.  Each coordinate set is a list of the form @code{(@var{x}
-@var{y})}, where @w{(@var{x}, @var{y})} is the curve’s end point.  The
-control point is the reflection of the control point of the previous
-command relative to the current point, if that command was
-@command{quadratic-bezier-curveto} or
+Using the first element in @var{coordinate-sets}, draw a quadratic
+Bézier curve from the current point.  If there are multiple coordinate
+sets, draw a polybézier.  Each coordinate set is a list of the form
+@code{(@var{x} @var{y})}, where @w{(@var{x}, @var{y})} is the curve’s
+end point.  The control point is the reflection of the control point
+of the previous command relative to the current point, if that command
+was @command{quadratic-bezier-curveto} or
 @command{smooth-quadratic-bezier-curveto}.  Otherwise the control
 point coincides with the current point.
 
@@ -407,12 +408,13 @@ point coincides with the current point.
 @end deffn
 
 @deffn Command elliptical-arc coordinate-sets
-Using the first coordinate set, draw an elliptical arc from the
-current point.  If there are multiple coordinate sets, draw a sequence
-of elliptical arcs.  Each coordinate set is a list of the form
-@code{(@var{rx} @var{ry} @var{x} @var{y})}, where @w{(@var{x},
-@var{y})} is the end point of the ellipse, and @w{(@var{rx},
-@var{ry})} are its radii.  Attributes may be appended to the list:
+Using the first element in @var{coordinate-sets}, draw an elliptical
+arc from the current point.  If there are multiple coordinate sets,
+draw a sequence of elliptical arcs.  Each coordinate set is a list of
+the form @code{(@var{rx} @var{ry} @var{x} @var{y})}, where
+@w{(@var{x}, @var{y})} is the end point of the ellipse, and
+@w{(@var{rx}, @var{ry})} are its radii.  Attributes may be appended to
+the list:
 
 @table @code
 @item :x-axis-rotation
