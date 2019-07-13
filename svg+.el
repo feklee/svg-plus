@@ -145,17 +145,6 @@ POINTS is a list of x/y pairs."
 			    ", "))
       ,@(svg+--arguments svg args)))))
 
-(defun svg+-path (svg commands &rest args)
-  "Add the outline of a shape to SVG. The COMMANDS follow the
-Scalable Vector Graphics standard. This function can be used to
-create arcs."
-  (let ((d (mapconcat 'prin1-to-string (apply 'append commands) " ")))
-    (svg+--append
-     svg
-     (dom-node 'path
-	       `((d . ,d)
-	         ,@(svg+--arguments svg args))))))
-
 (defun svg+-embed (svg image image-type datap &rest args)
   "Insert IMAGE into the SVG structure.
 IMAGE should be a file name if DATAP is nil, and a binary string
