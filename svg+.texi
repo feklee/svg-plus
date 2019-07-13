@@ -172,12 +172,12 @@ that describe the outer circumference of the polygon.
 
 @defun svg+-path svg commands &rest args
 Add the outline of a shape to @var{svg} according to @var{commands},
-which is a list of drawing commands.  @ref{Path Commands}.
+see @ref{Path Commands}.
 
 Coordinates by default are absolute.  To use coordinates relative to
-the last position, or - initially - to the origin, set the attribute
-@var{:relative} to @code{t}.  This attribute can be specified to the
-function or to individual commands.  If specified for the function,
+the last position, or -- initially -- to the origin, set the attribute
+@var{:relative} to @code{t}.  This attribute can be specified for the
+function or for individual commands.  If specified for the function,
 then all commands use relative coordinates by default.  To make an
 individual command use absolute coordinates, set @var{:relative} to
 @code{nil}.
@@ -226,14 +226,14 @@ binary string containing the image data.  @var{image-type} should be a
 @end defun
 
 @defun svg+-clip-path svg &rest args
-Create a clipping path to @var{svg}.  If applied to a shape via the
+Add a clipping path to @var{svg}.  If applied to a shape via the
 @var{:clip-path} property, parts of that shape which lie outside of
 the clipping path are not drawn.
 
 @lisp
 (let ((clip-path (svg+-clip-path svg :id "foo")))
-  (svg+-circle clip-path 350 350 300 :stroke-width 0))
-(svg+-rectangle svg 100 100 500 500
+  (svg+-circle clip-path 200 200 175))
+(svg+-rectangle svg 50 50 300 300
                 :fill-color "red"
                 :clip-path "url(#foo)")
 @end lisp
@@ -245,7 +245,7 @@ Add custom node @var{tag} to @var{svg}.
 @lisp
 (svg+-node svg
            'rect
-           :width 400 :height 200 :x 50 :y 100 :fill-color "green")
+           :width 300 :height 200 :x 50 :y 100 :fill-color "green")
 @end lisp
 @end defun
 
