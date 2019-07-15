@@ -410,7 +410,10 @@ This is in contrast to merely setting it to 0."
     (mapconcat 'prin1-to-string (apply extended-command) " ")))
 
 (defun svg+-path (svg commands &rest args)
-  "Add the outline of a shape to SVG according to COMMANDS."
+  "Add the outline of a shape to SVG according to COMMANDS.
+Coordinates by default are absolute.  ARGS is a plist of
+modifiers.  If :relative is t, then coordinates are relative to
+the last position, or -- initially -- to the origin."
   (let* ((default-relative (plist-get args :relative))
          (stripped-args (svg+--plist-delete args :relative))
          (d (mapconcat 'identity
@@ -426,9 +429,9 @@ This is in contrast to merely setting it to 0."
                  ,@(svg+--arguments svg stripped-args))))))
 
 (defun svg+-clip-path (svg &rest args)
-  "Add a clipping path to SVG.  If applied to a shape via the
-:clip-path property, parts of that shape which lie outside of the
-clipping path are not drawn."
+  "Add a clipping path to SVG, where ARGS is a plist of modifiers.
+If applied to a shape via the :clip-path property, parts of that
+shape which lie outside of the clipping path are not drawn."
   (let ((new-dom-node (dom-node 'clipPath
                                 `(,@(svg+--arguments svg args)))))
     (svg+--append svg new-dom-node)
