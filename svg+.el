@@ -304,7 +304,7 @@ This is in contrast to merely setting it to 0."
   (let (p)
     (while plist
       (if (not (eq property (car plist)))
-	  (setq p (plist-put p (car plist) (nth 1 plist))))
+          (setq p (plist-put p (car plist) (nth 1 plist))))
       (setq plist (cddr plist)))
     p))
 
@@ -375,15 +375,17 @@ This is in contrast to merely setting it to 0."
    (svg+--path-command-symbol 's args)
    (apply 'append coordinates-list)))
 
-(defun svg+--quadratic-bezier-curveto-command (coordinates-list &rest args)
-        (cons
-         (svg+--path-command-symbol 'q args)
-         (apply 'append coordinates-list)))
+(defun svg+--quadratic-bezier-curveto-command (coordinates-list
+                                               &rest args)
+  (cons
+   (svg+--path-command-symbol 'q args)
+   (apply 'append coordinates-list)))
 
-(defun svg+--smooth-quadratic-bezier-curveto-command (coordinates-list &rest args)
+(defun svg+--smooth-quadratic-bezier-curveto-command (coordinates-list
+                                                      &rest args)
   (cons
    (svg+--path-command-symbol 't args)
-      (apply 'append coordinates-list)))
+   (apply 'append coordinates-list)))
 
 (defun svg+--eval-path-command (command default-relative)
   (cl-letf
@@ -395,12 +397,14 @@ This is in contrast to merely setting it to 0."
        ((symbol-function 'vertical-lineto)
         #'svg+--vertical-lineto-command)
        ((symbol-function 'curveto) #'svg+--curveto-command)
-       ((symbol-function 'smooth-curveto) #'svg+--smooth-curveto-command)
+       ((symbol-function 'smooth-curveto)
+        #'svg+--smooth-curveto-command)
        ((symbol-function 'quadratic-bezier-curveto)
         #'svg+--quadratic-bezier-curveto-command)
        ((symbol-function 'smooth-quadratic-bezier-curveto)
         #'svg+--smooth-quadratic-bezier-curveto-command)
-       ((symbol-function 'elliptical-arc) #'svg+--elliptical-arc-command)
+       ((symbol-function 'elliptical-arc)
+        #'svg+--elliptical-arc-command)
        (extended-command (append command (list :default-relative
                                                default-relative))))
     (mapconcat 'prin1-to-string (apply extended-command) " ")))
@@ -412,27 +416,28 @@ This is in contrast to merely setting it to 0."
          (d (mapconcat 'identity
                        (mapcar 
                         (lambda (command)
-                          (svg+--eval-path-command command default-relative))
+                          (svg+--eval-path-command command
+                                                   default-relative))
                         commands) " ")))
     (svg+--append
      svg
      (dom-node 'path
-	       `((d . ,d)
-	         ,@(svg+--arguments svg stripped-args))))))
+               `((d . ,d)
+                 ,@(svg+--arguments svg stripped-args))))))
 
 (defun svg+-clip-path (svg &rest args)
   "Add a clipping path to SVG.  If applied to a shape via the
 :clip-path property, parts of that shape which lie outside of the
 clipping path are not drawn."
   (let ((new-dom-node (dom-node 'clipPath
-	                `(,@(svg+--arguments svg args)))))
+                                `(,@(svg+--arguments svg args)))))
     (svg+--append svg new-dom-node)
     new-dom-node))
 
 (defun svg+-node (svg tag &rest args)
   "Add the custom node TAG to SVG."
   (let ((new-dom-node (dom-node tag
-	                `(,@(svg+--arguments svg args)))))
+                                `(,@(svg+--arguments svg args)))))
     (svg+--append svg new-dom-node)
     new-dom-node))
 
