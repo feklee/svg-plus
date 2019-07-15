@@ -299,8 +299,8 @@ line is drawn along the connection.
 
 @deffn Command lineto points
 Draw a line from the current point to the first element in
-@var{points}, which is a list of X/Y position pairs.  If more than one
-point is specified, draw a polyline.
+@var{points}, a list of X/Y position pairs.  If more than one point is
+specified, draw a polyline.
 @lisp
 (svg+-path svg '((moveto ((200 . 100)))
                  (lineto ((100 . 200) (0 . 100))))
