@@ -422,7 +422,8 @@ relative to the x-axis of the current coordinate system.
 
 @item :large-arc
 If set to @code{t}, draw an arc sweep greater than or equal to 180
-degrees.  Otherwise, draw a smaller arc sweep.
+degrees.  Otherwise, draw an arc sweep smaller than or equal to 180
+degrees.
 
 @item :sweep
 If set to @code{t}, draw an arc in @dfn{positive angle direction}.
