@@ -184,10 +184,9 @@ individual command use absolute coordinates, set @var{:relative} to
 
 @lisp
 (svg+-path svg
-           '((moveto ((100 . 200)))
-             (elliptical-arc ((100 100 100 -100 :large-arc t)))
-             (lineto ((0 . 0)) :relative nil)
-             (closepath))
+           '((moveto ((100 . 100)))
+             (lineto ((200 . 0) (0 . 200) (-200 . 0)))
+             (lineto ((100 . 100)) :relative nil))
            :stroke-color "blue"
            :fill-color "lightblue"
            :relative t)
