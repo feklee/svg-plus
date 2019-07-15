@@ -240,7 +240,7 @@ the clipping path are not drawn.
 @end defun
 
 @defun svg+-node svg tag &rest args
-Add custom node @var{tag} to @var{svg}.
+Add the custom node @var{tag} to @var{svg}.
 
 @lisp
 (svg+-node svg
