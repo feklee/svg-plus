@@ -414,7 +414,7 @@ This is in contrast to merely setting it to 0."
   (let* ((default-relative (plist-get args :relative))
          (stripped-args (svg+--plist-delete args :relative))
          (d (mapconcat 'identity
-                       (mapcar 
+                       (mapcar
                         (lambda (command)
                           (svg+--eval-path-command command
                                                    default-relative))
